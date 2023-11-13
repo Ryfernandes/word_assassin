@@ -1,2 +1,4 @@
 # word_assassin
 Program to assign targets and words for a game of word assassin and text them to participants
+
+For those who haven't played word assissin before, the general idea is that each person gets a word and a target. They must get their target to say their assigned word. If they do, they have "eliminated" their target, and get the word and target that the eliminated target had. This goes on until the final target has been eliminated, or until the game reaches a standstill where two players know the words that the other has to get them out. The only issue with this is that, in order for everyone to play, someone outside of the group of players has to assign words and targets. This can be done by another person, but to simplify/speed up this process, I wrote the following, short code to assign words/targets and text them to each person playing. This utilizes the Textbelt API, so that I can send post requests with Python and have Textbelt send the messages.
