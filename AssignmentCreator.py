@@ -1,11 +1,12 @@
 import random
 import requests
 
-apiKey = "fcba19dd2093ec3bb84c44244921a054da714252qoXEFm9KJJXb7YlBJo9QJ07LO"
-phoneNumbers = {"Ryan F": "5083973554", "Jonny": "5089756850", "Jacob": "8575002749", "Jonah": "5086547781", "Max": "5089303452", "Gabe": "5088105373", "Reed": "7817076703", "Dan Z": "8574259259", "Ryan A": "5087828826", "Nadav": "7742792635", "Rick": "6179131681", "Dan B": "3392210312", "Matt": "5087822634"}
+apiKey = "MY-API-KEY" #API key from textbelt.com
+phoneNumbers = {"NAME1": "PHONE1", "NAME2": "PHONE2"} #names and phone numbers (no dashes) of all participants
 names = list(phoneNumbers.keys())
-words = "Crab,Water Bottle,Stoichiometry,Wild Krats,Pigskin,Microphone,Envelope,Butter Knife,Frisbee,Dentist,Xbox,Portal,Fox,Skull,Hammer,LED Lights,Swiss Army Knife,Twitch,Cactus,Overnight Camp,Earbud,Coin Toss,Anticipation,Artist,Red Panda,Communication,Textbook,Double Decker Bus,Frisbee,Jealousy,Maroon,KN95,Sculpture,Clay,Rocket,Shovel,Pickaxe,Oak,Juniper,Pear,Mango,Recycling,Lettuce,Suitcase,Paintbrush,Molar,Braces,Retainer,Aglet,Highlighter,Badminton,Pickleball,Cricket,Eagle,Jaguar,Puma,Panther,Lion,Tiger,Pie,Meta,Pikachu,Charmander,Squirtle,Piccolo,Clarinet,Stopwatch,Mustard,Mayo,Substitute,Mario,Toad,Sideline,Truck,Remote,Kiwi,Unity,Binder,Sharpener,Fire Extinguisher,Locomotive,Setter,Spork,Dragon,Telegram,Duplicate,German,Japanese,Portuguese,Pajamas,Crafting Table,Italicize,Conductor,Safari,Taxi,Skyscraper,Hand Sanitizer,Vaccine,Trampoline,Joe Biden,Bernie Sanders,Trump,Anaconda,Python,Hot Chocolate,Apple Cider,Keyboard,Violin,Global Awareness,Trophy,Document,Salsa,Dream,Bishop,Pawn,Dwight,Vance Refrigeration,Hole Puncher,Stapler,Stocking,Sheets,Carpet,Lightbulb,Hammer,Screwdriver,Battery,Electoral College,Harvard,Yale,MIT,Stanford,Maroon,Mockingbird,Potato".split(",")
+words = "WORD,WORD".split(",") #creates list of all playable words for the game (I had them in a google doc, so was easier to do .split)
 
+#gives each player a different player to be their initial target; organized so that the assignments of players make a "loop" and no two players will ever have each other as targets until the final two
 def createPairings(playerNames):
     if len(playerNames) < 2:
         return -1
@@ -15,6 +16,7 @@ def createPairings(playerNames):
     first = playerNames[idx]
     currentIdx = idx
 
+    #iterates through all names and removes them from names list before assignment; this way, no one gets themselves, and the names will always be assigned in a full "loop"
     for i in range(len(names) - 1):
         nextIdx = random.randint(0, len(playerNames) - 2)
         key = playerNames[currentIdx]
@@ -24,22 +26,26 @@ def createPairings(playerNames):
 
     assignments[playerNames[currentIdx]] = first
 
+    #returns a dictionary with all of the pairings
     return assignments
 
+#assigns each player a random word to be their word for the first round
 def assignNames(playerNames, words):
     assignments = {}
 
     for name in playerNames:
         idx = random.randint(0, len(words) - 1)
         assignments[name] = words[idx].lower()
-        words.pop(idx)
+        words.pop(idx) #ensures two people do not stat with the same word
 
-    return assignments
+    return assignments #returns dictionary with all plaers and their word
 
+#creates a string to be the message for the current name, their target, and their word
 def createMessage(name, nameAssignments, wordAssignments):
     msg = f"*From Ryan and Jonny*\nHello {name}, your word assassin target for the next round is {nameAssignments[name]}, and your word is {wordAssignments[name]}"
     return msg
 
+#made with sample code from textbelt; loops through all names and makes a post request to send their text message via textbelt
 def sendMessages(playerNames, nameAssignments, wordAssignments, phoneNumbers, apiKey):
     for name in playerNames:
         msg = createMessage(name, nameAssignments, wordAssignments)
@@ -50,8 +56,8 @@ def sendMessages(playerNames, nameAssignments, wordAssignments, phoneNumbers, ap
             'key': apiKey,
         })
 
-        print(resp.json())
+        print(resp.json()) #prints info on the success status, time, phone number, and remaining texts that can be sent
 
-nameAssignments = createPairings(names[:])
-wordAssignments = assignNames(names[:], words[:])
-sendMessages(names[:], nameAssignments, wordAssignments, phoneNumbers, apiKey)
+nameAssignments = createPairings(names[:]) #creates name assignments
+wordAssignments = assignNames(names[:], words[:]) #assigns words
+sendMessages(names[:], nameAssignments, wordAssignments, phoneNumbers, apiKey) #sends texts
