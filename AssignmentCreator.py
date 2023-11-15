@@ -5,6 +5,7 @@ apiKey = "MY-API-KEY" #API key from textbelt.com
 phoneNumbers = {"NAME1": "PHONE1", "NAME2": "PHONE2"} #names and phone numbers (no dashes) of all participants
 names = list(phoneNumbers.keys())
 words = "WORD,WORD".split(",") #creates list of all playable words for the game (I had them in a google doc, so was easier to do .split)
+words = list(set(words)) #removes all duplicates from the words list; set can be used because order of list is non-important
 
 #gives each player a different player to be their initial target; organized so that the assignments of players make a "loop" and no two players will ever have each other as targets until the final two
 def createPairings(playerNames):
